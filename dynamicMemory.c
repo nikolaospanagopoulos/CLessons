@@ -1,130 +1,123 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-struct StructName {
-  int num1;
-  int num2;
-};
+int *myFunc() {
 
-typedef struct Car {
-  int speed;
-  int topSpeed;
-  char *brand;
-  double price;
-} Car;
+  int *myNum = (int *)malloc(sizeof(int));
 
-void explainCar(Car carToExplain) {
-  printf("my car's speed is %d , it's top speed is %d, it's brand is %s, it's "
-         "price is %f \n",
-         carToExplain.speed, carToExplain.topSpeed, carToExplain.brand,
-         carToExplain.price);
+  printf("ptr value in function %d\n", *myNum);
+
+  int *mySecNum = (int *)calloc(1, sizeof(int));
+
+  printf("ptr value in function %d\n", *mySecNum);
+
+  *myNum = 5;
+
+  // 5 int -> 4 * 5 20 byte
+  int *firstArr = (int *)malloc(5 * sizeof(int));
+
+  int *secArr = (int *)calloc(5, sizeof(int));
+
+  for (int i = 0; i < 5; i++) {
+    firstArr[i] = i + 1;
+  }
+
+  for (int i = 0; i < 5; i++) {
+    printf("arry position %d: %d\n", i, firstArr[i]);
+  }
+
+  for (int i = 0; i < 5; i++) {
+    secArr[i] = i + 1;
+  }
+
+  for (int i = 0; i < 5; i++) {
+    printf("sec arry position %d: %d\n", i, secArr[i]);
+  }
+
+  free(firstArr);
+  free(secArr);
+
+  return myNum;
 }
 
-void startCar(Car toStart) { printf("my %s starts\n", toStart.brand); }
+void myReallocExample() {
+  int *arr = NULL;
 
-typedef unsigned long million;
+  arr = (int *)malloc(20);
 
-typedef struct Point {
-  int x;
-  int y;
-} Point;
+  for (int i = 0; i < 5; i++) {
+    arr[i] = i + 1;
+  }
 
-typedef struct UnnamedPoint {
-  int x;
-  int y;
-} UnnamedPoint;
+  for (int i = 0; i < 5; i++) {
+    printf(" arry position %d: %d\n", i, arr[i]);
+  }
 
-struct Employee {
-  int id;
-  float salary;
-  struct {
-    char *firstName;
-    char *lastName;
-  } name;
-};
+  int *tmp = realloc(arr, 24);
 
-// function
-// first we declare type (void, int, char etc) that the function will return
-// second we declare the function name ->px explainCar
-// third in the parenthesis we put the types of of arguments we will use
-// four we declare the function body
+  arr = tmp;
 
-int exampleVoidFunctionName(int exampleNum1, int exampleNum2) {
+  for (int i = 0; i < 6; i++) {
+    arr[i] = i + 1;
+  }
+  for (int i = 0; i < 6; i++) {
+    printf(" arry position %d: %d\n", i, arr[i]);
+  }
 
-  // krataw 4 byte gia to prwto argument me onoma exampleNum1
-  // krataw 4 byte gia to deutero argument me onoma exampleNum2
-
-  int result = exampleNum1 + exampleNum2;
-  return result;
+  free(arr);
 }
 
-int *functionToReturnPointer() {
-  int myNum = 5;
+int *exampleToFree() {
+  int *myNum = (int *)malloc(4);
 
-  return &myNum;
-}
+  *myNum = 5;
 
-void functionToTryToChangeNum(int numToChange) { numToChange = 5; }
-
-void functionToChangeNum(int *pointerToNumToChange) {
-  *pointerToNumToChange = 5;
+  return myNum;
 }
 
 int main() {
 
-  int result = exampleVoidFunctionName(5, 6);
+  int myArr[] = {1, 2, 3, 4, 5};
 
-  int myNum1 = 7;
-  int myNum2 = 8;
+  printf("ptr position %p\n", myArr);
+  printf("ptr value %d\n", *myArr);
 
-  int result2 = exampleVoidFunctionName(myNum1, myNum2);
+  int *myPtr = myFunc();
 
-  int myNumberToChange = 8;
+  printf("ptr position %p\n", myPtr);
+  printf("ptr value %d\n", *myPtr);
+  myReallocExample();
+  free(myPtr);
 
-  functionToTryToChangeNum(myNumberToChange);
+  int *myArr2 = NULL;
+  int size;
 
-  functionToChangeNum(&myNumberToChange);
+  printf("write size of array \n");
 
-  printf("myNumberToChange value: %d\n", myNumberToChange);
+  scanf("%d", &size);
 
-  printf("result is %d\n", result);
+  myArr2 = (int *)malloc(size * sizeof(int));
 
-  struct Employee myEmployee = {10, 1000, {"nikos", "no surname"}};
+  for (int i = 0; i < size; i++) {
+    printf("Enter element %d: ", i + 1);
+    scanf("%d", &myArr2[i]);
+  }
+  for (int i = 0; i < size; i++) {
+    printf(" arry position %d: %d\n", i, myArr2[i]);
+  }
 
-  million myMillion = 1000000;
+  free(myArr2);
 
-  // i have a variable mycar that is type of struct car
-  struct Car myCar = {45, 180, "toyota", 10.000};
-  // i have a variable mycar2 that is type of Car
-  Car myCar2 = {45, 180, "toyota", 10.000};
+  int *ptrToFree = exampleToFree();
 
-  Car myCar3 = {.speed = 50, .topSpeed = 160, .brand = "nissan", .price = 9000};
-
-  Point firstPoint = {10, 6};
-
-  UnnamedPoint mySecPoint = {6, 8};
-
-  struct UnnamedPoint myThirdPoint = {7, 9};
-
-  int myNum = 5;
-
-  explainCar(myCar);
-  explainCar(myCar2);
-  explainCar(myCar3);
-
-  startCar(myCar);
-
-  int *returnPtr = functionToReturnPointer();
-
-  printf("my returned ptr value is %d", *returnPtr);
-
-  // create a struct named Truck
-  // speed,topSpeed,cargo, color, price,brand;
-  // typedef kai xwris typedef
-  // ftiakse 3 Trucks
-
-  // kane printf tis aksies enos truck
-  // ftiakse ena function pou tha pairnei mesa ena truck kai tha kanei print ta
-  // xaraktiristika tou
+  free(ptrToFree);
+  ptrToFree = NULL;
 
   return 0;
 }
+
+// write a function that calculates the sum of two numbers and returns a ptr to
+// the result (result in dynamic memory) write a function that creates an array
+// of int and sets it's number to it's index + 1 write a function that creates
+// an array of double and sets it's number to it's index + 1 re write a similar
+// program with user input and arrays free memory accordingly
